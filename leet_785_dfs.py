@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 '''
-Leetcode #785 - using BFS
+Leetcode #785 - using DFS
 
 Is Graph Bi-partite?
 
@@ -41,40 +41,38 @@ graph[i] will not contain i or duplicate values.
 The graph is undirected: if any element j is in graph[i], then i will be in graph[j].
 
 '''
-def bfs(starting_node, adjList, colors):
-    starting_color = 0
 
-    q = []
-    q.append(starting_node)
-    colors[starting_node] = starting_color
-    while q:
-        current_node = q.pop(0)
-        # flip the color for next the neighbors
+def dfs(current_node, adjList, current_color, colors):
+    #color the current node with current color
+    colors[current_node] = current_color
+
+    for neighbor in adjList[current_node]:
+        #swap color from 1 to 0 or vice versa
         next_color = 1 - colors[current_node]
-
-        for neighbor in adjList[current_node]:
-            if neighbor not in colors:
-                colors[neighbor] = next_color
-                q.append(neighbor)
-            else:
-                if colors[neighbor] == colors[current_node]: # if neighbors have the same color then it cannot be bipartite
-                    return False    
-
+        if neighbor not in colors:
+            return dfs(neighbor, adjList, next_color, colors)
+        else:
+            # if neighbor is already colored make sure it is not the same color has the current node, or else violates bipartite
+            if colors[current_node] == colors[neighbor]:
+                return False
     return True
 
-def isBipartite(L): 
+def isBipartite(L):
+    
+    N = len(L)
     #building the braph ir adjacency list
     adjList = {}
     for src,dests in enumerate(L):
         adjList[src] = dests
 
     colors = {}
-    for node in adjList: # we have to go through all unvisited nodes to check for bipartite
-        if node not in colors:
-            if not bfs(node, adjList, colors):
-                return False
+    starting_color = 0
 
-    return True 
+    for starting_node in range(len(L)):
+        if starting_node not in colors:
+            if not dfs(starting_node,adjList, starting_color, colors):
+                return False
+    return True
 
     
 
