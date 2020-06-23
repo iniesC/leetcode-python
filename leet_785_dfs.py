@@ -49,8 +49,8 @@ def dfs(current_node, adjList, current_color, colors):
     for neighbor in adjList[current_node]:
         #swap color from 1 to 0 or vice versa
         next_color = 1 - colors[current_node]
-        if neighbor not in colors:
-            return dfs(neighbor, adjList, next_color, colors)
+        if neighbor not in colors and not dfs(neighbor, adjList, next_color, colors):
+            return False
         else:
             # if neighbor is already colored make sure it is not the same color has the current node, or else violates bipartite
             if colors[current_node] == colors[neighbor]:
@@ -90,5 +90,8 @@ def main():
     L = [[],[2,4,6],[1,4,8,9],[7,8],[1,2,8,9],[6,9],[1,5,7,8,9],[3,6,9],[2,3,4,6,9],[2,4,5,6,7,8]]
     print(isBipartite(L))
 
+    #test 4
+    L = [[3,4,6],[3,6],[3,6],[0,1,2,5],[0,7,8],[3],[0,1,2,7],[4,6],[4],[]]
+    print(isBipartite(L))
 if __name__ == "__main__":
     main()
